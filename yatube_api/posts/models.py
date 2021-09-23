@@ -42,7 +42,7 @@ class Comment(models.Model):
         """
         Overriding base __str__. Outputs the name of the group.
         """
-        return self.title
+        return self.text
 
 
 class Follow(models.Model):
@@ -67,4 +67,3 @@ class Follow(models.Model):
              update_fields=None):
         self.full_clean()
         return super(Follow, self).save()
-
