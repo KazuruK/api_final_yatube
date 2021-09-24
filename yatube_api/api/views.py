@@ -7,18 +7,16 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from . import serializers
-from .permissions import IsOwnerOrReadOnly
+from .permissions import IsOwnerOrReadOnly, ReadOnly
 
 
-class CreateListFollowViewSet(mixins.CreateModelMixin,
-                              mixins.ListModelMixin,
-                              GenericViewSet):
+class CreateListViewSet(mixins.CreateModelMixin, mixins.ListModelMixin,
+                        GenericViewSet):
     pass
 
 
-class ListRetrieveGroupViewSet(mixins.ListModelMixin,
-                               mixins.RetrieveModelMixin,
-                               GenericViewSet):
+class ListRetrieveViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin,
+                          GenericViewSet):
     pass
 
 
@@ -35,10 +33,10 @@ class PostViewSet(ModelViewSet):
         serializer.save(author=self.request.user)
 
 
-class GroupViewSet(ListRetrieveGroupViewSet):
+class GroupViewSet(ListRetrieveViewSet):
     queryset = Group.objects.all()
     serializer_class = serializers.GroupSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [ReadOnly]
 
 
 class CommentViewSet(ModelViewSet):
@@ -51,17 +49,23 @@ class CommentViewSet(ModelViewSet):
     def get_queryset(self):
         return get_object_or_404(
             Post,
-            id=self.kwargs['post_id']
+            id=self.kwargs.get('post_id')
         ).comments.all()
 
     def perform_create(self, serializer):
+        serializer.save(
+            author=self.request.user,
+            post=get_object_or_404(Post, id=self.kwargs.get('post_id'))
+        )
+
+    def perform_update(self, serializer):
         serializer.save(
             author=self.request.user,
             post=get_object_or_404(Post, id=self.kwargs['post_id'])
         )
 
 
-class FollowViewSet(CreateListFollowViewSet):
+class FollowViewSet(CreateListViewSet):
     queryset = Follow.objects.all()
     serializer_class = serializers.FollowSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -73,5 +77,4 @@ class FollowViewSet(CreateListFollowViewSet):
         return self.request.user.follower.all()
 
     def perform_create(self, serializer):
-        serializer.is_valid(raise_exception=True)
         serializer.save(user=self.request.user)

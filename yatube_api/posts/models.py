@@ -12,6 +12,9 @@ class Group(models.Model):
     description = models.TextField(blank=True, null=True,
                                    verbose_name='Описание')
 
+    class Meta:
+        ordering = ['title']
+
 
 class Post(models.Model):
     group = models.ForeignKey(Group, blank=True, null=True,
@@ -26,7 +29,10 @@ class Post(models.Model):
         upload_to='posts/', null=True, blank=True)
 
     def __str__(self):
-        return self.text
+        return self.text[:15]
+
+    class Meta:
+        ordering = ['-pub_date']
 
 
 class Comment(models.Model):
@@ -38,11 +44,14 @@ class Comment(models.Model):
     created = models.DateTimeField(
         'Дата добавления', auto_now_add=True, db_index=True)
 
+    class Meta:
+        ordering = ['created']
+
     def __str__(self):
         """
         Overriding base __str__. Outputs the name of the group.
         """
-        return self.text
+        return self.text[:15]
 
 
 class Follow(models.Model):
@@ -52,6 +61,7 @@ class Follow(models.Model):
                                   related_name='following')
 
     class Meta:
+        ordering = ['following']
         constraints = [
             models.UniqueConstraint(
                 fields=['user', 'following'],
