@@ -1,10 +1,11 @@
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from posts.models import Follow, Group, Post
 from rest_framework import mixins, permissions
 from rest_framework.filters import SearchFilter
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
+
+from posts.models import Follow, Group, Post
 
 from . import serializers
 from .permissions import IsOwnerOrReadOnly
