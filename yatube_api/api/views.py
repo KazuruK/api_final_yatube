@@ -67,12 +67,6 @@ class CommentViewSet(ModelViewSet):
             post=get_object_or_404(Post, id=self.kwargs.get('post_id'))
         )
 
-    def perform_update(self, serializer):
-        serializer.save(
-            author=self.request.user,
-            post=get_object_or_404(Post, id=self.kwargs['post_id'])
-        )
-
 
 class FollowViewSet(CreateListViewSet):
     queryset = Follow.objects.all()
