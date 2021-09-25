@@ -7,23 +7,31 @@ from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from posts.models import Follow, Group, Post
 
-from . import serializers
+from .serializers import (
+    PostSerializer, GroupSerializer, CommentSerializer, FollowSerializer
+)
 from .permissions import IsOwnerOrReadOnly
 
 
-class CreateListViewSet(mixins.CreateModelMixin, mixins.ListModelMixin,
-                        GenericViewSet):
+class CreateListViewSet(
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    GenericViewSet
+):
     pass
 
 
-class ListRetrieveViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin,
-                          GenericViewSet):
+class ListRetrieveViewSet(
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    GenericViewSet
+):
     pass
 
 
 class PostViewSet(ModelViewSet):
     queryset = Post.objects.all()
-    serializer_class = serializers.PostSerializer
+    serializer_class = PostSerializer
     permission_classes = [
         permissions.IsAuthenticatedOrReadOnly,
         IsOwnerOrReadOnly
@@ -36,12 +44,12 @@ class PostViewSet(ModelViewSet):
 
 class GroupViewSet(ListRetrieveViewSet):
     queryset = Group.objects.all()
-    serializer_class = serializers.GroupSerializer
+    serializer_class = GroupSerializer
     permission_classes = [IsOwnerOrReadOnly]
 
 
 class CommentViewSet(ModelViewSet):
-    serializer_class = serializers.CommentSerializer
+    serializer_class = CommentSerializer
     permission_classes = [
         permissions.IsAuthenticatedOrReadOnly,
         IsOwnerOrReadOnly
@@ -68,7 +76,7 @@ class CommentViewSet(ModelViewSet):
 
 class FollowViewSet(CreateListViewSet):
     queryset = Follow.objects.all()
-    serializer_class = serializers.FollowSerializer
+    serializer_class = FollowSerializer
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = (DjangoFilterBackend, SearchFilter,)
     filterset_fields = ('user', 'following')

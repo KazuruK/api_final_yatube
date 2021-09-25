@@ -12,7 +12,7 @@ class Group(models.Model):
                                    verbose_name='Описание')
 
     class Meta:
-        ordering = ['title']
+        ordering = ('title',)
 
 
 class Post(models.Model):
@@ -31,7 +31,7 @@ class Post(models.Model):
         return self.text[:15]
 
     class Meta:
-        ordering = ['-pub_date']
+        ordering = ('-pub_date',)
 
 
 class Comment(models.Model):
@@ -44,7 +44,7 @@ class Comment(models.Model):
         'Дата добавления', auto_now_add=True, db_index=True)
 
     class Meta:
-        ordering = ['created']
+        ordering = ('created',)
 
     def __str__(self):
         """
@@ -60,7 +60,7 @@ class Follow(models.Model):
                                   related_name='following')
 
     class Meta:
-        ordering = ['following']
+        ordering = ('user','following')
         constraints = [
             models.UniqueConstraint(
                 fields=['user', 'following'],
