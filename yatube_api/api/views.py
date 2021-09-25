@@ -7,7 +7,7 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from . import serializers
-from .permissions import IsOwnerOrReadOnly, ReadOnly
+from .permissions import IsOwnerOrReadOnly
 
 
 class CreateListViewSet(mixins.CreateModelMixin, mixins.ListModelMixin,
@@ -36,7 +36,7 @@ class PostViewSet(ModelViewSet):
 class GroupViewSet(ListRetrieveViewSet):
     queryset = Group.objects.all()
     serializer_class = serializers.GroupSerializer
-    permission_classes = [ReadOnly]
+    permission_classes = [IsOwnerOrReadOnly]
 
 
 class CommentViewSet(ModelViewSet):

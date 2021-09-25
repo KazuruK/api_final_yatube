@@ -68,12 +68,3 @@ class Follow(models.Model):
                 name='unique_user_following',
             )
         ]
-
-    def clean(self):
-        if self.user == self.following:
-            raise ValidationError('Нельзя подписаться на самого себя')
-
-    def save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None):
-        self.full_clean()
-        return super(Follow, self).save()
